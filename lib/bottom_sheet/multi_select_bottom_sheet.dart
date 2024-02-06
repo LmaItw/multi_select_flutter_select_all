@@ -24,6 +24,12 @@ class MultiSelectBottomSheet<T> extends StatefulWidget
   /// Toggles search functionality.
   final bool searchable;
 
+  /// Toggles select all functionality. Default is false.
+  final bool selectAll;
+
+  /// Text on the select all button, if enabled.
+  final Text? selectAllText;
+
   /// Text on the confirm button.
   final Text? confirmText;
 
@@ -89,6 +95,8 @@ class MultiSelectBottomSheet<T> extends StatefulWidget
     this.cancelText,
     this.confirmText,
     this.searchable = false,
+    this.selectAllText,
+    this.selectAll = false,
     this.selectedColor,
     this.initialChildSize,
     this.minChildSize,
@@ -156,14 +164,9 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
         controlAffinity: ListTileControlAffinity.leading,
         onChanged: (checked) {
           setState(() {
-            _selectedValues = widget.onItemCheckedChange(
-                _selectedValues, item.value, checked!);
+            // _selectedValues = widget.onItemCheckedChange(_selectedValues, item.value, checked!);
+            _setSelectedState(item, checked!);
 
-            if (checked) {
-              item.selected = true;
-            } else {
-              item.selected = false;
-            }
             if (widget.separateSelectedItems) {
               _items = widget.separateSelected(_items);
             }
@@ -183,23 +186,23 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
       child: ChoiceChip(
         backgroundColor: widget.unselectedColor,
         selectedColor:
-            widget.colorator != null && widget.colorator!(item.value) != null
-                ? widget.colorator!(item.value)
-                : widget.selectedColor != null
-                    ? widget.selectedColor
-                    : Theme.of(context).primaryColor.withOpacity(0.35),
+        widget.colorator != null && widget.colorator!(item.value) != null
+            ? widget.colorator!(item.value)
+            : widget.selectedColor != null
+            ? widget.selectedColor
+            : Theme.of(context).primaryColor.withOpacity(0.35),
         label: Text(
           item.label,
           style: _selectedValues.contains(item.value)
               ? TextStyle(
-                  color: widget.selectedItemsTextStyle?.color ??
-                      widget.colorator?.call(item.value) ??
-                      widget.selectedColor?.withOpacity(1) ??
-                      Theme.of(context).primaryColor,
-                  fontSize: widget.selectedItemsTextStyle != null
-                      ? widget.selectedItemsTextStyle!.fontSize
-                      : null,
-                )
+            color: widget.selectedItemsTextStyle?.color ??
+                widget.colorator?.call(item.value) ??
+                widget.selectedColor?.withOpacity(1) ??
+                Theme.of(context).primaryColor,
+            fontSize: widget.selectedItemsTextStyle != null
+                ? widget.selectedItemsTextStyle!.fontSize
+                : null,
+          )
               : widget.itemsTextStyle,
         ),
         selected: item.selected,
@@ -210,8 +213,9 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
             item.selected = false;
           }
           setState(() {
-            _selectedValues = widget.onItemCheckedChange(
-                _selectedValues, item.value, checked);
+            // _selectedValues = widget.onItemCheckedChange(_selectedValues, item.value, checked!);
+            _setSelectedState(item, checked!);
+
           });
           if (widget.onSelectionChanged != null) {
             widget.onSelectionChanged!(_selectedValues);
@@ -221,11 +225,29 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
     );
   }
 
+  void _setSelectedState(MultiSelectItem item, bool checked) {
+    _selectedValues =
+        widget.onItemCheckedChange(_selectedValues, item.value, checked);
+
+    if (checked) {
+      item.selected = true;
+    } else {
+      item.selected = false;
+    }
+  }
+
+  void _selectAll(bool checked) {
+    _items.forEach((item) => _setSelectedState(item, checked));
+    if (widget.onSelectionChanged != null) {
+      widget.onSelectionChanged!(_selectedValues);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: DraggableScrollableSheet(
         initialChildSize: widget.initialChildSize ?? 0.3,
         minChildSize: widget.minChildSize ?? 0.3,
@@ -241,85 +263,85 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                   children: [
                     _showSearch
                         ? Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: TextField(
-                                autofocus: true,
-                                style: widget.searchTextStyle,
-                                decoration: InputDecoration(
-                                  hintStyle: widget.searchHintStyle,
-                                  hintText: widget.searchHint ?? "Search",
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: widget.selectedColor ??
-                                            Theme.of(context).primaryColor),
-                                  ),
-                                ),
-                                onChanged: (val) {
-                                  List<MultiSelectItem<T>> filteredList = [];
-                                  filteredList = widget.updateSearchQuery(
-                                      val, widget.items);
-                                  setState(() {
-                                    if (widget.separateSelectedItems) {
-                                      _items =
-                                          widget.separateSelected(filteredList);
-                                    } else {
-                                      _items = filteredList;
-                                    }
-                                  });
-                                },
-                              ),
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: TextField(
+                          autofocus: true,
+                          style: widget.searchTextStyle,
+                          decoration: InputDecoration(
+                            hintStyle: widget.searchHintStyle,
+                            hintText: widget.searchHint ?? "Search",
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: widget.selectedColor ??
+                                      Theme.of(context).primaryColor),
                             ),
-                          )
+                          ),
+                          onChanged: (val) {
+                            List<MultiSelectItem<T>> filteredList = [];
+                            filteredList = widget.updateSearchQuery(
+                                val, widget.items);
+                            setState(() {
+                              if (widget.separateSelectedItems) {
+                                _items =
+                                    widget.separateSelected(filteredList);
+                              } else {
+                                _items = filteredList;
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                    )
                         : widget.title ??
-                            Text(
-                              "Select",
-                              style: TextStyle(fontSize: 18),
-                            ),
+                        Text(
+                          "Select",
+                          style: TextStyle(fontSize: 18),
+                        ),
                     widget.searchable
                         ? IconButton(
-                            icon: _showSearch
-                                ? widget.closeSearchIcon ?? Icon(Icons.close)
-                                : widget.searchIcon ?? Icon(Icons.search),
-                            onPressed: () {
-                              setState(() {
-                                _showSearch = !_showSearch;
-                                if (!_showSearch) {
-                                  if (widget.separateSelectedItems) {
-                                    _items =
-                                        widget.separateSelected(widget.items);
-                                  } else {
-                                    _items = widget.items;
-                                  }
-                                }
-                              });
-                            },
-                          )
+                      icon: _showSearch
+                          ? widget.closeSearchIcon ?? Icon(Icons.close)
+                          : widget.searchIcon ?? Icon(Icons.search),
+                      onPressed: () {
+                        setState(() {
+                          _showSearch = !_showSearch;
+                          if (!_showSearch) {
+                            if (widget.separateSelectedItems) {
+                              _items =
+                                  widget.separateSelected(widget.items);
+                            } else {
+                              _items = widget.items;
+                            }
+                          }
+                        });
+                      },
+                    )
                         : Padding(
-                            padding: EdgeInsets.all(15),
-                          ),
+                      padding: EdgeInsets.all(15),
+                    ),
                   ],
                 ),
               ),
               Expanded(
                 child: widget.listType == null ||
-                        widget.listType == MultiSelectListType.LIST
+                    widget.listType == MultiSelectListType.LIST
                     ? ListView.builder(
-                        controller: scrollController,
-                        itemCount: _items.length,
-                        itemBuilder: (context, index) {
-                          return _buildListItem(_items[index]);
-                        },
-                      )
+                  controller: scrollController,
+                  itemCount: _items.length,
+                  itemBuilder: (context, index) {
+                    return _buildListItem(_items[index]);
+                  },
+                )
                     : SingleChildScrollView(
-                        controller: scrollController,
-                        child: Container(
-                          padding: EdgeInsets.all(10),
-                          child: Wrap(
-                            children: _items.map(_buildChipItem).toList(),
-                          ),
-                        ),
-                      ),
+                  controller: scrollController,
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    child: Wrap(
+                      children: _items.map(_buildChipItem).toList(),
+                    ),
+                  ),
+                ),
               ),
               Container(
                 padding: EdgeInsets.all(2),
@@ -336,8 +358,8 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                               "CANCEL",
                               style: TextStyle(
                                 color: (widget.selectedColor != null &&
-                                        widget.selectedColor !=
-                                            Colors.transparent)
+                                    widget.selectedColor !=
+                                        Colors.transparent)
                                     ? widget.selectedColor!.withOpacity(1)
                                     : Theme.of(context).primaryColor,
                               ),
@@ -345,6 +367,26 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                       ),
                     ),
                     SizedBox(width: 10),
+                    if (widget.selectAll)
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () {
+                            setState(() => _selectAll(true));
+                          },
+                          child: widget.selectAllText ??
+                              Text(
+                                "SELECT ALL",
+                                style: TextStyle(
+                                  color: (widget.selectedColor != null &&
+                                      widget.selectedColor !=
+                                          Colors.transparent)
+                                      ? widget.selectedColor!.withOpacity(1)
+                                      : Theme.of(context).primaryColor,
+                                ),
+                              ),
+                        ),
+                      ),
+                    if (widget.selectAll) SizedBox(width: 10),
                     Expanded(
                       child: TextButton(
                         onPressed: () {
@@ -356,8 +398,8 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                               "OK",
                               style: TextStyle(
                                 color: (widget.selectedColor != null &&
-                                        widget.selectedColor !=
-                                            Colors.transparent)
+                                    widget.selectedColor !=
+                                        Colors.transparent)
                                     ? widget.selectedColor!.withOpacity(1)
                                     : Theme.of(context).primaryColor,
                               ),
