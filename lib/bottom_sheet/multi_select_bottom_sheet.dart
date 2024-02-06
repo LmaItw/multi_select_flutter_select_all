@@ -351,11 +351,12 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                     Expanded(
                       child: TextButton(
                         onPressed: () {
-                          widget.onCancelTap(context, widget.initialValue);
+                          //widget.onCancelTap(context, widget.initialValue);
+                          setState(() => _selectAll(false));
                         },
                         child: widget.cancelText ??
                             Text(
-                              "CANCEL",
+                              "UNSELECT ALL",
                               style: TextStyle(
                                 color: (widget.selectedColor != null &&
                                     widget.selectedColor !=
