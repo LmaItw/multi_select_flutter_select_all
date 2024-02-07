@@ -13,7 +13,7 @@ class MultiSelectBottomSheet<T> extends StatefulWidget
   final List<T> initialValue;
 
   /// The text at the top of the BottomSheet.
-  final Widget? title;
+  final String? title;
 
   /// Fires when the an item is selected / unselected.
   final void Function(List<T>)? onSelectionChanged;
@@ -420,7 +420,7 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
   }
 
   String _getTitle() {
-    String title = "Select";
+    String title = widget.title ?? "SELECT";
 
     if(_selectedValues.isNotEmpty && widget.items.length != _selectedValues.length) {
       title += "(${_selectedValues.length})";
