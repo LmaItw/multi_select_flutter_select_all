@@ -295,9 +295,9 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                         ),
                       ),
                     )
-                        : widget.title ??
+                        : //widget.title ??
                         Text(
-                          "Select",
+                          _getTitle(),
                           style: TextStyle(fontSize: 18),
                         ),
                     widget.searchable
@@ -417,5 +417,14 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
         },
       ),
     );
+  }
+
+  String _getTitle() {
+    String title = "Select";
+
+    if(_selectedValues.isNotEmpty && widget.items.length != _selectedValues.length) {
+      title += "(${_selectedValues.length})";
+    }
+    return title;
   }
 }
