@@ -238,6 +238,9 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
   }
 
   void _selectAll(bool checked) {
+    if(!checked) {
+      _selectedValues=[];
+    }
     _items.forEach((item) => _setSelectedState(item, checked));
     if (widget.onSelectionChanged != null) {
       widget.onSelectionChanged!(_selectedValues);
