@@ -24,7 +24,7 @@ class MultiSelectBottomSheetField<V> extends FormField<List<V>> {
   final List<V> initialValue;
 
   /// The text at the top of the dialog.
-  final Widget? title;
+  final String? title;
 
   /// Fires when the an item is selected / unselected.
   final void Function(List<V>)? onSelectionChanged;
@@ -213,7 +213,7 @@ class _MultiSelectBottomSheetFieldView<V> extends StatefulWidget {
   final Icon? buttonIcon;
   final List<MultiSelectItem<V>> items;
   final List<V> initialValue;
-  final Widget? title;
+  final String? title;
   final void Function(List<V>)? onSelectionChanged;
   final void Function(List<V>)? onConfirm;
   final bool searchable;
