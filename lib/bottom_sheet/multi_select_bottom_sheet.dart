@@ -18,6 +18,9 @@ class MultiSelectBottomSheet<T> extends StatefulWidget
   /// Sets the color of the title.
   final Color? titleColor;
 
+  /// Sets the color of the action's background.
+  final Color? actionBackgroundColor;
+
   /// Fires when the an item is selected / unselected.
   final void Function(List<T>)? onSelectionChanged;
 
@@ -93,6 +96,7 @@ class MultiSelectBottomSheet<T> extends StatefulWidget
     required this.initialValue,
     this.title,
     this.titleColor,
+    this.actionBackgroundColor,
     this.onSelectionChanged,
     this.onConfirm,
     this.listType,
@@ -353,6 +357,7 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
               ),
               Container(
                 padding: EdgeInsets.all(2),
+                color: widget.actionBackgroundColor,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
