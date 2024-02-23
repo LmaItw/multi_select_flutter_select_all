@@ -356,7 +356,7 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.all(2),
+                padding: EdgeInsets.all(20),
                 color: widget.actionBackgroundColor,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
