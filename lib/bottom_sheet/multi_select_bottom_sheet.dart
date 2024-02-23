@@ -376,7 +376,7 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                         widget.onConfirmTap(context, _selectedValues, widget.onConfirm);
                       },
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
                         child: widget.confirmText ??
                             Text(
                               "OK",
