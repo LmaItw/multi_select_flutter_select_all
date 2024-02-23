@@ -356,13 +356,14 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.symmetric(horizontal: 2, vertical: 20),
                 color: widget.actionBackgroundColor,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Expanded(
                       child: TextButton(
+                        style: ButtonStyle(shape: MaterialStateProperty.all(ContinuousRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColor, width: 1)))),
                         onPressed: () {
                           //widget.onCancelTap(context, widget.initialValue);
                           setState(() => _selectAll(false));
