@@ -375,17 +375,20 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                       onPressed: () {
                         widget.onConfirmTap(context, _selectedValues, widget.onConfirm);
                       },
-                      child: widget.confirmText ??
-                          Text(
-                            "OK",
-                            style: TextStyle(color: Colors.white
-                                // color: (widget.selectedColor != null &&
-                                //     widget.selectedColor !=
-                                //         Colors.transparent)
-                                //     ? widget.selectedColor!.withOpacity(1)
-                                //     : Theme.of(context).primaryColor,
-                                ),
-                          ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: widget.confirmText ??
+                            Text(
+                              "OK",
+                              style: TextStyle(color: Colors.white
+                                  // color: (widget.selectedColor != null &&
+                                  //     widget.selectedColor !=
+                                  //         Colors.transparent)
+                                  //     ? widget.selectedColor!.withOpacity(1)
+                                  //     : Theme.of(context).primaryColor,
+                                  ),
+                            ),
+                      ),
                     ),
                   ],
                 ),
