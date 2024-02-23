@@ -4,8 +4,7 @@ import '../util/multi_select_actions.dart';
 import '../util/multi_select_list_type.dart';
 
 /// A bottom sheet widget containing either a classic checkbox style list, or a chip style list.
-class MultiSelectBottomSheet<T> extends StatefulWidget
-    with MultiSelectActions<T> {
+class MultiSelectBottomSheet<T> extends StatefulWidget with MultiSelectActions<T> {
   /// List of items to select from.
   final List<MultiSelectItem<T>> items;
 
@@ -123,8 +122,7 @@ class MultiSelectBottomSheet<T> extends StatefulWidget
   });
 
   @override
-  _MultiSelectBottomSheetState<T> createState() =>
-      _MultiSelectBottomSheetState<T>(items);
+  _MultiSelectBottomSheetState<T> createState() => _MultiSelectBottomSheetState<T>(items);
 }
 
 class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
@@ -160,14 +158,10 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
       child: CheckboxListTile(
         checkColor: widget.checkColor,
         value: item.selected,
-        activeColor: widget.colorator != null
-            ? widget.colorator!(item.value) ?? widget.selectedColor
-            : widget.selectedColor,
+        activeColor: widget.colorator != null ? widget.colorator!(item.value) ?? widget.selectedColor : widget.selectedColor,
         title: Text(
           item.label,
-          style: item.selected
-              ? widget.selectedItemsTextStyle
-              : widget.itemsTextStyle,
+          style: item.selected ? widget.selectedItemsTextStyle : widget.itemsTextStyle,
         ),
         controlAffinity: ListTileControlAffinity.leading,
         onChanged: (checked) {
@@ -194,24 +188,18 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
       child: ChoiceChip(
         showCheckmark: false,
         backgroundColor: widget.unselectedColor,
-        selectedColor:
-        widget.colorator != null && widget.colorator!(item.value) != null
+        selectedColor: widget.colorator != null && widget.colorator!(item.value) != null
             ? widget.colorator!(item.value)
             : widget.selectedColor != null
-            ? widget.selectedColor
-            : Theme.of(context).primaryColor.withOpacity(0.35),
+                ? widget.selectedColor
+                : Theme.of(context).primaryColor.withOpacity(0.35),
         label: Text(
           item.label,
           style: _selectedValues.contains(item.value)
               ? TextStyle(
-            color: widget.selectedItemsTextStyle?.color ??
-                widget.colorator?.call(item.value) ??
-                widget.selectedColor?.withOpacity(1) ??
-                Theme.of(context).primaryColor,
-            fontSize: widget.selectedItemsTextStyle != null
-                ? widget.selectedItemsTextStyle!.fontSize
-                : null,
-          )
+                  color: widget.selectedItemsTextStyle?.color ?? widget.colorator?.call(item.value) ?? widget.selectedColor?.withOpacity(1) ?? Theme.of(context).primaryColor,
+                  fontSize: widget.selectedItemsTextStyle != null ? widget.selectedItemsTextStyle!.fontSize : null,
+                )
               : widget.itemsTextStyle,
         ),
         selected: item.selected,
@@ -224,7 +212,6 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
           setState(() {
             // _selectedValues = widget.onItemCheckedChange(_selectedValues, item.value, checked!);
             _setSelectedState(item, checked!);
-
           });
           if (widget.onSelectionChanged != null) {
             widget.onSelectionChanged!(_selectedValues);
@@ -235,8 +222,7 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
   }
 
   void _setSelectedState(MultiSelectItem item, bool checked) {
-    _selectedValues =
-        widget.onItemCheckedChange(_selectedValues, item.value, checked);
+    _selectedValues = widget.onItemCheckedChange(_selectedValues, item.value, checked);
 
     if (checked) {
       item.selected = true;
@@ -246,7 +232,7 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
   }
 
   void _selectAll(bool checked) {
-      _selectedValues=[];
+    _selectedValues = [];
     _items.forEach((item) => _setSelectedState(item, checked));
     if (widget.onSelectionChanged != null) {
       widget.onSelectionChanged!(_selectedValues);
@@ -256,8 +242,7 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:
-      EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: DraggableScrollableSheet(
         initialChildSize: widget.initialChildSize ?? 0.3,
         minChildSize: widget.minChildSize ?? 0.3,
@@ -273,87 +258,77 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                   children: [
                     _showSearch
                         ? Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: TextField(
-                          autofocus: true,
-                          style: widget.searchTextStyle,
-                          decoration: InputDecoration(
-                            hintStyle: widget.searchHintStyle,
-                            hintText: widget.searchHint ?? "Search",
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: widget.selectedColor ??
-                                      Theme.of(context).primaryColor),
+                            child: Container(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: TextField(
+                                autofocus: true,
+                                style: widget.searchTextStyle,
+                                decoration: InputDecoration(
+                                  hintStyle: widget.searchHintStyle,
+                                  hintText: widget.searchHint ?? "Search",
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: widget.selectedColor ?? Theme.of(context).primaryColor),
+                                  ),
+                                ),
+                                onChanged: (val) {
+                                  List<MultiSelectItem<T>> filteredList = [];
+                                  filteredList = widget.updateSearchQuery(val, widget.items);
+                                  setState(() {
+                                    if (widget.separateSelectedItems) {
+                                      _items = widget.separateSelected(filteredList);
+                                    } else {
+                                      _items = filteredList;
+                                    }
+                                  });
+                                },
+                              ),
                             ),
-                          ),
-                          onChanged: (val) {
-                            List<MultiSelectItem<T>> filteredList = [];
-                            filteredList = widget.updateSearchQuery(
-                                val, widget.items);
-                            setState(() {
-                              if (widget.separateSelectedItems) {
-                                _items =
-                                    widget.separateSelected(filteredList);
-                              } else {
-                                _items = filteredList;
-                              }
-                            });
-                          },
-                        ),
-                      ),
-                    )
+                          )
                         : //widget.title ??
                         Text(
-                          _getTitle(),
-                          style: TextStyle(
-                              color: widget.titleColor != null ? widget.titleColor : Colors.white,
-                              fontSize: 20, fontWeight: FontWeight.w700),
-                        ),
+                            _getTitle(),
+                            style: TextStyle(color: widget.titleColor != null ? widget.titleColor : Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
+                          ),
                     widget.searchable
                         ? IconButton(
-                      icon: _showSearch
-                          ? widget.closeSearchIcon ?? Icon(Icons.close)
-                          : widget.searchIcon ?? Icon(Icons.search),
-                      onPressed: () {
-                        setState(() {
-                          _showSearch = !_showSearch;
-                          if (!_showSearch) {
-                            if (widget.separateSelectedItems) {
-                              _items =
-                                  widget.separateSelected(widget.items);
-                            } else {
-                              _items = widget.items;
-                            }
-                          }
-                        });
-                      },
-                    )
+                            icon: _showSearch ? widget.closeSearchIcon ?? Icon(Icons.close) : widget.searchIcon ?? Icon(Icons.search),
+                            onPressed: () {
+                              setState(() {
+                                _showSearch = !_showSearch;
+                                if (!_showSearch) {
+                                  if (widget.separateSelectedItems) {
+                                    _items = widget.separateSelected(widget.items);
+                                  } else {
+                                    _items = widget.items;
+                                  }
+                                }
+                              });
+                            },
+                          )
                         : Padding(
-                      padding: EdgeInsets.all(15),
-                    ),
+                            padding: EdgeInsets.all(15),
+                          ),
                   ],
                 ),
               ),
               Expanded(
-                child: widget.listType == null ||
-                    widget.listType == MultiSelectListType.LIST
+                child: widget.listType == null || widget.listType == MultiSelectListType.LIST
                     ? ListView.builder(
-                  controller: scrollController,
-                  itemCount: _items.length,
-                  itemBuilder: (context, index) {
-                    return _buildListItem(_items[index]);
-                  },
-                )
+                        controller: scrollController,
+                        itemCount: _items.length,
+                        itemBuilder: (context, index) {
+                          return _buildListItem(_items[index]);
+                        },
+                      )
                     : SingleChildScrollView(
-                  controller: scrollController,
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    child: Wrap(
-                      children: _items.map(_buildChipItem).toList(),
-                    ),
-                  ),
-                ),
+                        controller: scrollController,
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          child: Wrap(
+                            children: _items.map(_buildChipItem).toList(),
+                          ),
+                        ),
+                      ),
               ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -372,11 +347,7 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                             Text(
                               "UNSELECT ALL",
                               style: TextStyle(
-                                color: (widget.selectedColor != null &&
-                                    widget.selectedColor !=
-                                        Colors.transparent)
-                                    ? widget.selectedColor!.withOpacity(1)
-                                    : Theme.of(context).primaryColor,
+                                color: (widget.selectedColor != null && widget.selectedColor != Colors.transparent) ? widget.selectedColor!.withOpacity(1) : Theme.of(context).primaryColor,
                               ),
                             ),
                       ),
@@ -393,11 +364,7 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                               Text(
                                 "SELECT ALL",
                                 style: TextStyle(
-                                  color: (widget.selectedColor != null &&
-                                      widget.selectedColor !=
-                                          Colors.transparent)
-                                      ? widget.selectedColor!.withOpacity(1)
-                                      : Theme.of(context).primaryColor,
+                                  color: (widget.selectedColor != null && widget.selectedColor != Colors.transparent) ? widget.selectedColor!.withOpacity(1) : Theme.of(context).primaryColor,
                                 ),
                               ),
                         ),
@@ -405,22 +372,20 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                     if (widget.selectAll) SizedBox(width: 10),
                     Expanded(
                       child: TextButton(
-                        style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor)),
+                        style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor), shape: MaterialStateProperty.all(ContinuousRectangleBorder())),
                         onPressed: () {
-                          widget.onConfirmTap(
-                              context, _selectedValues, widget.onConfirm);
+                          widget.onConfirmTap(context, _selectedValues, widget.onConfirm);
                         },
                         child: widget.confirmText ??
                             Text(
                               "OK",
-                              style: TextStyle(
-                                color: Colors.white
-                                // color: (widget.selectedColor != null &&
-                                //     widget.selectedColor !=
-                                //         Colors.transparent)
-                                //     ? widget.selectedColor!.withOpacity(1)
-                                //     : Theme.of(context).primaryColor,
-                              ),
+                              style: TextStyle(color: Colors.white
+                                  // color: (widget.selectedColor != null &&
+                                  //     widget.selectedColor !=
+                                  //         Colors.transparent)
+                                  //     ? widget.selectedColor!.withOpacity(1)
+                                  //     : Theme.of(context).primaryColor,
+                                  ),
                             ),
                       ),
                     ),
@@ -437,7 +402,7 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
   String _getTitle() {
     String title = widget.title ?? "SELECT";
 
-    if(_selectedValues.isNotEmpty && widget.items.length != _selectedValues.length) {
+    if (_selectedValues.isNotEmpty && widget.items.length != _selectedValues.length) {
       title += "(${_selectedValues.length})";
     }
     return title;
