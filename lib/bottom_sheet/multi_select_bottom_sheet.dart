@@ -308,7 +308,7 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                           _getTitle(),
                           style: TextStyle(
                               color: widget.titleColor != null ? widget.titleColor : Colors.white,
-                              fontSize: 18),
+                              fontSize: 20, fontWeight: FontWeight.w700),
                         ),
                     widget.searchable
                         ? IconButton(
