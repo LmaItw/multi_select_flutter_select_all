@@ -356,7 +356,7 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 2, vertical: 20),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 color: widget.actionBackgroundColor,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -385,6 +385,7 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                     if (widget.selectAll)
                       Expanded(
                         child: TextButton(
+                          style: ButtonStyle(shape: MaterialStateProperty.all(ContinuousRectangleBorder(side: BorderSide(color: Theme.of(context).primaryColor, width: 1)))),
                           onPressed: () {
                             setState(() => _selectAll(true));
                           },
@@ -404,6 +405,7 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                     if (widget.selectAll) SizedBox(width: 10),
                     Expanded(
                       child: TextButton(
+                        style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor)),
                         onPressed: () {
                           widget.onConfirmTap(
                               context, _selectedValues, widget.onConfirm);
@@ -412,11 +414,12 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                             Text(
                               "OK",
                               style: TextStyle(
-                                color: (widget.selectedColor != null &&
-                                    widget.selectedColor !=
-                                        Colors.transparent)
-                                    ? widget.selectedColor!.withOpacity(1)
-                                    : Theme.of(context).primaryColor,
+                                color: Colors.white
+                                // color: (widget.selectedColor != null &&
+                                //     widget.selectedColor !=
+                                //         Colors.transparent)
+                                //     ? widget.selectedColor!.withOpacity(1)
+                                //     : Theme.of(context).primaryColor,
                               ),
                             ),
                       ),
