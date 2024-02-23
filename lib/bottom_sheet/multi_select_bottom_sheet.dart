@@ -370,24 +370,22 @@ class _MultiSelectBottomSheetState<T> extends State<MultiSelectBottomSheet<T>> {
                         ),
                       ),
                     if (widget.selectAll) SizedBox(width: 10),
-                    Expanded(
-                      child: TextButton(
-                        style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor), shape: MaterialStateProperty.all(ContinuousRectangleBorder())),
-                        onPressed: () {
-                          widget.onConfirmTap(context, _selectedValues, widget.onConfirm);
-                        },
-                        child: widget.confirmText ??
-                            Text(
-                              "OK",
-                              style: TextStyle(color: Colors.white
-                                  // color: (widget.selectedColor != null &&
-                                  //     widget.selectedColor !=
-                                  //         Colors.transparent)
-                                  //     ? widget.selectedColor!.withOpacity(1)
-                                  //     : Theme.of(context).primaryColor,
-                                  ),
-                            ),
-                      ),
+                    TextButton(
+                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor), shape: MaterialStateProperty.all(ContinuousRectangleBorder())),
+                      onPressed: () {
+                        widget.onConfirmTap(context, _selectedValues, widget.onConfirm);
+                      },
+                      child: widget.confirmText ??
+                          Text(
+                            "OK",
+                            style: TextStyle(color: Colors.white
+                                // color: (widget.selectedColor != null &&
+                                //     widget.selectedColor !=
+                                //         Colors.transparent)
+                                //     ? widget.selectedColor!.withOpacity(1)
+                                //     : Theme.of(context).primaryColor,
+                                ),
+                          ),
                     ),
                   ],
                 ),
